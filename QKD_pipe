@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e  # Stop if an error occurs
+#set -v  # Echo commands as they are read
+
+# this creates a LDPC parity check matrix 5000x10000
+./make-ldpc QKD.pchk $2 1000 2 evenboth 3 no4cycle
+# this creates a LDPC generator matrix from the provided parity check matrix
+./make-gen  QKD.pchk QKD.gen dense
+
+# raw key generation
+./rand-src - 1 1000x400 \
+| ./transmit - Bob.src 1 BSC $1
+
+# Error correction
+./encode QKD.pchk QKD.gen Alice.src - \
+| ./encode_emulator Bob.src - QKD.pchk QKD.gen - \
+| ./decode QKD.pchk - - BSC $1 prprp 250 \
+| ./verify QKD.pchk - QKD.gen Alice.src

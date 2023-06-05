@@ -1,0 +1,29 @@
+#!/bin/sh
+
+set -e  # Stop if an error occurs
+#set -v  # Echo commands as they are read
+
+# this creates a LDPC parity check matrix 5000x10000
+./make-ldpc QKD.pchk 500 1000 2 evenboth 3 no4cycle
+# this creates a LDPC generator matrix from the provided parity check matrix
+./make-gen  QKD.pchk QKD.gen dense
+
+# create a random source file for provided numbers
+# this number of bits is from the photon source
+# if the transmission is done for 0.1 second (100 milli-seconds) total sifted keys produced is 4,00,000
+./rand-src Alice.src 1 1000x400
+
+# trasmit the source file via BSC channel 
+./transmit Alice.src Bob.src 1 BSC $1
+
+# calculate the parity bits from Alice
+./encode QKD.pchk QKD.gen Alice.src Alice.pck
+
+# using the paricty bits from Alice emulate encodings for Bob
+./encode_emulator Bob.src Alice.pck QKD.pchk QKD.gen Bob.enc
+
+# carry out the error correction prodedure
+./decode QKD.pchk Bob.enc Bob.dec BSC $1 prprp 250
+
+# verification of the error corrected code
+./verify QKD.pchk Bob.dec QKD.gen Alice.src
