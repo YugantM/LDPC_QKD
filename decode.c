@@ -63,7 +63,7 @@ int main
 
   int i, j, k;
 
-  clock_t start, end;
+  clock_t start_time, end_time;
   double cpu_time_used;
 
   /* Look at initial flag arguments. */
@@ -236,6 +236,9 @@ int main
   tot_iter = 0;
   tot_valid = 0;
   tot_changed = 0;
+  cpu_time_used = 0;
+
+  
 
   for (block_no = 0; ; block_no++)
   { 
@@ -303,7 +306,7 @@ int main
 
     /* Try to decode using the specified method. */
 
-    start = clock(); // Start the clock
+    start_time = clock(); // Start the clock
     switch (dec_method)
     { case Prprp:
       { iters = prprp_decode (H, lratio, dblk, pchk, bitpr);
@@ -315,8 +318,9 @@ int main
       }
       default: abort();
     }
-    end = clock(); // Stop the clock
-    cpu_time_used = 1000 * ((double) (end - start)) / CLOCKS_PER_SEC;
+    end_time = clock(); // Stop the clock
+    cpu_time_used += 1000 * ((double) (end_time - start_time)) / CLOCKS_PER_SEC;
+    
     /* See if it worked, and how many bits were changed. */
 
     valid = check(H,dblk,pchk)==0;
@@ -355,6 +359,7 @@ int main
     { break;
     }
   }
+  
 
   /* Finish up. */
 

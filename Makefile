@@ -109,7 +109,9 @@ modules:
 	$(COMPILE) mod2sparse.c
 	$(COMPILE) mod2convert.c
 	$(COMPILE) distrib.c
-	$(COMPILE) -DRAND_FILE=\"${CURDIR}/randfile\" rand.c
+	$(COMPILE) -DRAND_FILE=\"`pwd`/randfile\" rand.c
+
+# /Users/yuganthadiyal/Desktop/Master Thesis/LDPC_QKD/randfile
 
 
 # CLEAN UP ALL PROGRAMS AND REMOVE ALL FILES PRODUCED BY TESTS AND EXAMPLES.
