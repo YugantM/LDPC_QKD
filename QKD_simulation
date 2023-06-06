@@ -16,9 +16,25 @@ set -e  # Stop if an error occurs
 # trasmit the source file via BSC channel 
 ./transmit Alice.src Bob.src 1 BSC $1
 
-# calculate the parity bits from Alice
-./encode QKD.pchk QKD.gen Alice.src Alice.pck
 
+####### Alice Node
+# calculate the parity bits from Alice
+#
+#  Alice.src (sifted bits) --> function --> parity bits
+#
+
+./encode QKD.pchk QKD.gen Alice.src Alice.pck
+##########-------------------
+
+
+### --> send the parity bits to the Bob Node via authenticated classical channel
+
+
+####### Bobe Node
+# bob mimics the encodings 
+#
+#  Bob.src (sifted bits) + parity bits (from Alice)  --> function --> encodings
+#
 # using the paricty bits from Alice emulate encodings for Bob
 ./encode_emulator Bob.src Alice.pck QKD.pchk QKD.gen Bob.enc
 
@@ -27,3 +43,5 @@ set -e  # Stop if an error occurs
 
 # verification of the error corrected code
 ./verify QKD.pchk Bob.dec QKD.gen Alice.src
+
+#####-----------------

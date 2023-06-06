@@ -24,8 +24,8 @@
 # make things more complex and error-prone.
 
 
-COMPILE = cc -c -O    # Command to compile a module from .c to .o
-LINK =    cc          # Command to link a program
+COMPILE = gcc -c -O    # Command to compile a module from .c to .o
+LINK = gcc          # Command to link a program
 
 
 # MAKE ALL THE MAIN PROGRAMS.  First makes the modules used.
@@ -109,7 +109,7 @@ modules:
 	$(COMPILE) mod2sparse.c
 	$(COMPILE) mod2convert.c
 	$(COMPILE) distrib.c
-	$(COMPILE) -DRAND_FILE=\"`pwd`/randfile\" rand.c
+	$(COMPILE) -DRAND_FILE=\"${CURDIR}/randfile\" rand.c
 
 
 # CLEAN UP ALL PROGRAMS AND REMOVE ALL FILES PRODUCED BY TESTS AND EXAMPLES.
